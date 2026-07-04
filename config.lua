@@ -1,5 +1,15 @@
+-- ============================================================================
+-- WeatherSync - configuration
+-- Full documentation: docs/getting-started/configuration.md
+-- ============================================================================
+
 Config = {}
 
+-- ============================================================================
+-- GENERAL
+-- ============================================================================
+
+-- Show a chat notification when a player toggles sync with /weathersync
 Config.Notify = false
 
 -- Enable the automated test suite commands: /weathertest (in game) and
@@ -7,74 +17,100 @@ Config.Notify = false
 -- /synccheck diagnostics stays available regardless of this setting.
 Config.enableTests = false
 
--- RedM only
+-- Weather types available to /weather, /myweather and the admin UI
 Config.weatherTypes = RDR2WeatherTypes
 
--- Default time when the resource starts (day, hour, minute, second).
--- nil = use real server time (when timescale is 0) or start at Sun 00:00 (when timescale > 0)
--- Example: DHMSToTime(0, 6, 0, 0) to always start at Sun 06:00
+-- ============================================================================
+-- TIME
+-- ============================================================================
+
+-- Time when the resource starts (game time in seconds).
+--   nil                     = use the real server clock (when timescale is 0)
+--                             or start at Sun 00:00 (when timescale > 0)
+--   DHMSToTime(0, 6, 0, 0)  = always start at Sun 06:00
 Config.time = nil
 
--- Default ratio of in-game seconds to real seconds. Standard game time is 30:1, or 1 in-game minute = 2 real seconds. A value of 0 means time will be synced with the real server time.
+-- In-game seconds per real second.
+--   0  = sync the in-game clock with the real server clock (1:1)
+--   30 = standard game speed (1 in-game minute every 2 real seconds)
 Config.timescale = 0
 
--- Timezone offset in hours from server time (e.g. 3 for UTC+3, -5 for UTC-5). Only used when syncing with real server time (timescale = 0 and Config.time = nil).
+-- Timezone offset in hours relative to the server clock (e.g. 3 for UTC+3,
+-- -5 for UTC-5). Only used when Config.timescale = 0 and Config.time = nil.
 Config.timezoneOffset = 0
 
--- Whether time is frozen when the resource starts
+-- Freeze time when the resource starts
 Config.timeIsFrozen = false
 
--- Default weather when the resource starts
+-- ============================================================================
+-- WEATHER
+-- ============================================================================
+
+-- Weather when the resource starts
 Config.weather = "sunny"
 
--- The interval (in-game time) between weather changes
+-- Interval between weather changes (game time in seconds)
 Config.weatherInterval = DHMSToTime(0, 1, 0, 0)
 
--- Whether weather is frozen when the resource starts
+-- Freeze weather when the resource starts
 Config.weatherIsFrozen = false
 
--- Whether to permanently add snow on the ground, or only during snowy weather
+-- Keep snow on the ground permanently, regardless of weather
 Config.permanentSnow = false
 
--- Whether to add snow on the ground when:
---  a) in the snowy area of the map
---  b) in the northern part of the map with snowy weather
+-- Add snow on the ground dynamically when:
+--   a) the player is in the snowy area of the map, or
+--   b) the player is in the northern part of the map during snowy weather
 Config.dynamicSnow = false
 
--- Number of weather intervals to queue up
+-- Number of weather intervals to queue for the forecast
 Config.maxForecast = 23
 
--- Default wind direction when the resource starts
+-- ============================================================================
+-- WIND
+-- ============================================================================
+
+-- Wind direction in degrees when the resource starts (0 = North)
 Config.windDirection = 0.0
 
--- Default base wind speed when the resource starts
+-- Base wind speed when the resource starts
 Config.windSpeed = 0.0
 
--- Degrees by which wind direction changes at higher altitudes
-Config.windShearDirection = 45
-
--- Amount by which base wind speed increases at higher altitudes
-Config.windShearSpeed = 2.0
-
--- Interval in metres where wind direction/speed changes
-Config.windShearInterval = 50.0
-
--- Whether wind direction is frozen when the resource starts
+-- Freeze wind direction when the resource starts
 Config.windIsFrozen = false
 
--- How often in milliseconds to sync with clients
+-- Degrees by which wind direction shifts per altitude interval
+Config.windShearDirection = 45
+
+-- Amount by which wind speed increases per altitude interval
+Config.windShearSpeed = 2.0
+
+-- Altitude interval in metres for wind shear
+Config.windShearInterval = 50.0
+
+-- ============================================================================
+-- SYNC
+-- ============================================================================
+
+-- Server tick interval in milliseconds. This only controls how often the
+-- server advances its internal clock and weather queue - it does NOT cause
+-- network traffic. Clients are only messaged when something actually changes.
 Config.syncDelay = 5000
 
--- The following tables describe the weather pattern of the world. For every type of weather that may occur, the types of weather that may follow are given with a number representing the percentage of their likeliness. For example:
+-- ============================================================================
+-- WEATHER PATTERN
+-- ============================================================================
+-- For every weather type that may occur, list the types that may follow it
+-- with a percentage chance. The chances for each type must add up to 100.
 --
+-- Example:
 --     ["sunny"] = {
---         ["sunny"] = 50
+--         ["sunny"]  = 50,
 --         ["clouds"] = 50
 --     }
+-- means sunny weather is followed by sunny (50%) or clouds (50%).
 --
--- means that when the weather is sunny, the next stage is 50% likely to be sunny or 50% likely to be cloudy.
---
--- All the numbers for the next stages must add up to 100.
+-- Every weather type referenced here must also have its own entry.
 
 Config.weatherPattern = {
     ["sunny"] = {

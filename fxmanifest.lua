@@ -4,8 +4,8 @@ rdr3_warning "I acknowledge that this is a prerelease build of RedM, and I am aw
 
 name "weathersync"
 author "kibukj"
-description "Time and weather synchronization for RedM"
-url "https://github.com/kibook/weathersync"
+description "Optimized time and weather synchronization for RedM"
+version "2.0.0"
 
 ui_page "ui/index.html"
 
@@ -17,14 +17,19 @@ files {
 }
 
 shared_scripts {
-    "shared.lua",
+    "shared/utils.lua",
     "config.lua"
 }
 
 client_scripts {
-    "client.lua"
+    "client/main.lua",
+    "client/interface.lua",
+    "client/commands.lua",
+    "client/tests.lua"
 }
 
 server_scripts {
-    "server.lua"
+    "server/main.lua",
+    "server/commands.lua",
+    "server/tests.lua"
 }
