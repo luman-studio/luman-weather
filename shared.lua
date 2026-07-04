@@ -68,14 +68,10 @@ end
 
 if IsDuplicityVersion() then
     function getCurrentTime(baseServerTime, timescale, dayLength, weekLength, baseGameTime)
-        if timescale == 0 then
-            -- Sync with real-world time, but use baseGameTime as offset
-            local elapsedRealTime = (GetGameTimer() - baseServerTime) / 1000
-            return math.floor(baseGameTime + elapsedRealTime) % weekLength
-        else
-            -- Calculate based on timescale
-            local elapsedRealTime = (GetGameTimer() - baseServerTime) / 1000
-            return math.floor(baseGameTime + (elapsedRealTime * timescale)) % weekLength
-        end
+        -- Timescale 0 means sync with real time (1 in-game second per real second)
+        local scale = timescale == 0 and 1 or timescale
+        local elapsedRealTime = (GetGameTimer() - baseServerTime) / 1000
+
+        return math.floor(baseGameTime + elapsedRealTime * scale) % weekLength
     end
 end

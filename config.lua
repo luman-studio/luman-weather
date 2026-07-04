@@ -2,6 +2,11 @@ Config = {}
 
 Config.Notify = false
 
+-- Enable the automated test suite commands: /weathertest (in game) and
+-- weathertest (server console). Keep disabled on production servers;
+-- /synccheck diagnostics stays available regardless of this setting.
+Config.enableTests = false
+
 -- RedM only
 Config.weatherTypes = RDR2WeatherTypes
 
